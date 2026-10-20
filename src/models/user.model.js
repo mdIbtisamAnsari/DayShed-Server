@@ -30,6 +30,10 @@ const userSchema = new Schema({
   expiresOn: {
     type: Date,
   },
+  refreshToken: {
+    type: String,
+    select: false,
+  }
 },{timestamps: true});
 
 
