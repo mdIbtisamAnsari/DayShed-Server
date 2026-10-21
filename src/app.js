@@ -1,6 +1,4 @@
 import express, { urlencoded } from "express";
-import cors from "cors";
-import cookieParser from "cookie-parser";
 import { ApiError } from "./utils/apiError.js";
 
 const app = express();
@@ -24,17 +22,20 @@ const errorHandler = (err, req, res, next) => {
     return res.status(error.statusCode).json(response);
 };
 
-app.use(cors({
-  origin: "*",  // to change later !!!!!!!!!!!!!!
-  credentials: true,
-}));
-app.use(cookieParser());
+
+
 app.use(express.json({ limit: "10mb" }));
 app.use(urlencoded({ extended: true, limit: "10mb" }))
 app.use(express.static("public"))
-app.use(cookieParser())
+
 app.use(errorHandler)
 
-// import Routes
+// Import Routes
+
+import authRouter from "./routes/auth.route.js";
+import aiRouter from "./routes/ai.route.js";
+
+app.use("/auth", authRouter);
+app.use("/ai", aiRouter);
 
 export {app}
