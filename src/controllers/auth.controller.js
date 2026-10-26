@@ -13,19 +13,21 @@ const client = new OAuth2Client(
   "70557043877-c39hshh6qu24p08bj0d9ptrgkau13t8s.apps.googleusercontent.com"
 );
 
-const generateAccessAndRefreshTokens = asyncHandler(async (userId) => {
+const generateAccessAndRefreshTokens = async (userId) => {
   const user = await User.findById(userId);
 
-  const accessToken = await user.generateAccessToken();
+  if (!user) {
+    throw new Error("User not found");
+  }
 
+  const accessToken = await user.generateAccessToken();
   const refreshToken = await user.generateRefreshToken();
 
   user.refreshToken = refreshToken;
-
   await user.save({ validateBeforeSave: false });
 
   return { accessToken, refreshToken };
-});
+};
 
 const otpKey = (email) => {
   return `otp:${email}`;
@@ -170,7 +172,6 @@ const submitNewPasswordWithOtp = asyncHandler(async (req, res) => {
 });
 
 const handleGoogleSignIn = asyncHandler(async (req, res) => {
-  console.log("got here")
   try {
     const { idToken } = req.body;
 
@@ -183,7 +184,7 @@ const handleGoogleSignIn = asyncHandler(async (req, res) => {
 
     const ticket = await client.verifyIdToken({
       idToken: idToken,
-      audience: process.env.WEB_CLIENT_ID,
+      audience: "70557043877-c39hshh6qu24p08bj0d9ptrgkau13t8s.apps.googleusercontent.com",
     });
 
     const payload = ticket.getPayload();
@@ -194,7 +195,7 @@ const handleGoogleSignIn = asyncHandler(async (req, res) => {
       user = await User.create({
         password: process.env.PASSWORD,
         email,
-        fullname: name,
+        fullName: name,
         isVerified: true,
       });
     }
