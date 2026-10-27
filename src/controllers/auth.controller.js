@@ -4,11 +4,11 @@ import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import jwt from "jsonwebtoken";
 import { Resend } from "resend";
-// import { redis } from "../app.js";
+import { redis } from "../app.js";
 import { getEmailTemplate } from "../components/EmailTemplate.js";
 import { OAuth2Client } from "google-auth-library";
 
-// const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY);
 const client = new OAuth2Client(
   "70557043877-c39hshh6qu24p08bj0d9ptrgkau13t8s.apps.googleusercontent.com"
 );
